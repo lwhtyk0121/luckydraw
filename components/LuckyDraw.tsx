@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Participant } from '../types';
-import { 
-  GiftIcon, 
-  ArrowPathIcon, 
+import {
+  GiftIcon,
+  ArrowPathIcon,
   TrophyIcon,
   ListBulletIcon
 } from '@heroicons/react/24/outline';
@@ -18,12 +18,12 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ participants }) => {
   const [isRolling, setIsRolling] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [lastWinner, setLastWinner] = useState<Participant | null>(null);
-  
+
   const timerRef = useRef<number | null>(null);
 
   // Available pool for non-duplicate draws
-  const availablePool = allowDuplicates 
-    ? participants 
+  const availablePool = allowDuplicates
+    ? participants
     : participants.filter(p => !winners.find(w => w.id === p.id));
 
   const startDraw = () => {
@@ -55,8 +55,8 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ participants }) => {
 
   const finishDraw = () => {
     setIsRolling(false);
-    const pool = allowDuplicates 
-      ? participants 
+    const pool = allowDuplicates
+      ? participants
       : participants.filter(p => !winners.find(w => w.id === p.id));
 
     if (pool.length > 0) {
@@ -73,102 +73,110 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ participants }) => {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10 w-full animate-in fade-in slide-in-from-right-4 duration-700">
       {/* Config & Draw Area */}
-      <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 text-center overflow-hidden relative">
-        <div className="absolute top-0 right-0 p-4">
-           <label className="flex items-center cursor-pointer space-x-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
-            <input 
-              type="checkbox" 
+      <div className="glass p-12 rounded-[2.5rem] border-white/5 shadow-2xl text-center relative overflow-hidden">
+        <div className="absolute top-8 right-8 z-10">
+          <label className="flex items-center cursor-pointer space-x-3 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/5 transition-all">
+            <input
+              type="checkbox"
               checked={allowDuplicates}
               onChange={(e) => setAllowDuplicates(e.target.checked)}
-              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
+              className="w-4 h-4 bg-transparent border-white/20 rounded text-blue-500 focus:ring-blue-500/50"
             />
-            <span className="text-xs font-medium text-slate-600">允許重複抽中</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Allow Duplicates</span>
           </label>
         </div>
 
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-slate-800 flex items-center justify-center mb-2">
-            <GiftIcon className="w-8 h-8 mr-2 text-purple-500" />
-            獎品大抽籤
+        <div className="mb-12">
+          <div className="w-16 h-16 bg-indigo-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <TrophyIcon className="w-8 h-8 text-indigo-400" />
+          </div>
+          <h2 className="text-4xl font-black text-white font-display tracking-tight mb-3">
+            Grand Lottery
           </h2>
-          <p className="text-slate-500">準備好揭曉幸運兒了嗎？</p>
+          <p className="text-slate-500 font-medium tracking-tight">Who will be the next lucky standout?</p>
         </div>
 
         {/* Display Area */}
-        <div className="relative h-48 flex items-center justify-center mb-8">
-          <div className="absolute inset-0 bg-slate-50 rounded-2xl flex items-center justify-center border-4 border-slate-100 overflow-hidden">
-             {/* Rolling Animation */}
-             {isRolling ? (
-               <div className="text-5xl font-black text-purple-600 animate-pulse transition-all">
-                 {participants[currentIndex]?.name}
-               </div>
-             ) : lastWinner ? (
-               <div className="text-center">
-                 <div className="text-sm uppercase tracking-widest text-slate-400 font-bold mb-2">幸運得主</div>
-                 <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-indigo-600 animate-float">
-                    {lastWinner.name}
-                 </div>
-                 <div className="mt-4 text-xs text-slate-500">恭喜中獎！</div>
-               </div>
-             ) : (
-               <div className="text-slate-300 text-xl font-medium">點擊下方按鈕開始</div>
-             )}
+        <div className="relative h-64 flex items-center justify-center mb-12">
+          <div className="absolute inset-0 bg-white/[0.02] rounded-3xl flex items-center justify-center border border-white/5 overflow-hidden shadow-inner">
+            {/* Rolling Animation */}
+            {isRolling ? (
+              <div className="text-6xl font-black text-indigo-500 animate-pulse transition-all font-display tracking-tighter">
+                {participants[currentIndex]?.name}
+              </div>
+            ) : lastWinner ? (
+              <div className="text-center animate-in zoom-in-95 duration-500">
+                <div className="text-[10px] uppercase tracking-[0.4em] text-indigo-400 font-black mb-4 glow-text">Selected Winner</div>
+                <div className="text-7xl font-black text-white font-display tracking-tighter drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                  {lastWinner.name}
+                </div>
+                <div className="mt-6 flex justify-center">
+                  <div className="px-4 py-1.5 bg-indigo-500/10 rounded-full text-indigo-400 text-[10px] font-bold uppercase tracking-widest border border-indigo-500/20">
+                    Congratulations
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-slate-700 text-xs font-bold uppercase tracking-[0.3em]">Ready for initialization</div>
+            )}
           </div>
         </div>
 
         <button
           onClick={startDraw}
           disabled={isRolling || availablePool.length === 0}
-          className={`px-12 py-4 rounded-2xl text-xl font-bold shadow-lg transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center mx-auto ${
-            isRolling || availablePool.length === 0
-              ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:shadow-purple-200 shadow-purple-500/20'
-          }`}
+          className={`px-16 py-5 rounded-2xl text-lg font-black tracking-tight transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center mx-auto min-w-[240px] shadow-2xl ${isRolling || availablePool.length === 0
+              ? 'bg-white/5 text-slate-700 cursor-not-allowed border border-white/5'
+              : 'bg-white text-black hover:bg-slate-200'
+            }`}
         >
           {isRolling ? (
             <>
-              <ArrowPathIcon className="w-6 h-6 mr-2 animate-spin" />
-              正在抽取...
+              <ArrowPathIcon className="w-6 h-6 mr-3 animate-spin" />
+              Rolling...
             </>
           ) : (
-            '開始抽籤'
+            availablePool.length === 0 ? 'Pool Depleted' : 'Initiate Draw'
           )}
         </button>
 
-        <div className="mt-4 text-xs text-slate-400 italic">
-          剩餘可抽中人數: {availablePool.length} 位
+        <div className="mt-8 flex justify-center items-center space-x-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+          <div className="w-1.5 h-1.5 bg-indigo-500/50 rounded-full animate-pulse"></div>
+          <span>Remaining Candidates: {availablePool.length}</span>
         </div>
       </div>
 
       {/* Winners List */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-lg font-semibold mb-4 flex items-center">
-          <ListBulletIcon className="w-5 h-5 mr-2 text-purple-500" />
-          抽籤歷史記錄
+      <div className="glass p-10 rounded-[2.5rem] border-white/5 shadow-2xl">
+        <h3 className="text-xl font-bold mb-8 flex items-center text-white font-display">
+          <div className="p-2 bg-indigo-500/10 rounded-lg mr-4">
+            <ListBulletIcon className="w-6 h-6 text-indigo-400" />
+          </div>
+          Hall of Fame
         </h3>
         {winners.length === 0 ? (
-          <div className="py-8 text-center text-slate-400 italic">
-            目前尚無中獎紀錄
+          <div className="py-16 text-center">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center mb-6">
+              <GiftIcon className="w-6 h-6 text-slate-800" />
+            </div>
+            <p className="text-slate-600 font-medium tracking-tight uppercase text-xs tracking-[0.2em]">No history accumulated</p>
           </div>
         ) : (
-          <div className="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-4">
             {winners.map((winner, idx) => (
-              <div 
+              <div
                 key={`${winner.id}-${idx}`}
-                className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100"
+                className="flex items-center justify-between p-5 bg-white/[0.02] rounded-2xl border border-white/5 hover:border-indigo-500/30 transition-all group"
               >
                 <div className="flex items-center">
-                  <span className="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">
-                    {winners.length - idx}
+                  <span className="w-8 h-8 bg-indigo-500/20 text-indigo-400 rounded-xl flex items-center justify-center text-[10px] font-black mr-4 border border-indigo-500/10">
+                    #{winners.length - idx}
                   </span>
-                  <span className="font-semibold text-slate-700">{winner.name}</span>
+                  <span className="font-bold text-slate-200 tracking-tight">{winner.name}</span>
                 </div>
-                <div className="flex items-center text-xs text-slate-400">
-                  <TrophyIcon className="w-3 h-3 mr-1" />
-                  Winner
-                </div>
+                <TrophyIcon className="w-4 h-4 text-slate-700 group-hover:text-indigo-400 transition-colors" />
               </div>
             ))}
           </div>
